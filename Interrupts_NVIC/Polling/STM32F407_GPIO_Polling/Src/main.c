@@ -25,6 +25,47 @@
 
 int main(void)
 {
+	// Input : User Button B1 (PA0)
+	// Enable Clock for Input (GPIOA)
+	RCC -> AHB1ENR |= (1U << 0);
+
+	// Configure PA0 as Input in GPIO_MODE Register (Pin 0 & 1 as 00(input))
+	GPIOA -> MODER &=  ~(3U << 0);
+
+
+	// Output : Onboard Green LED4 PD12
+	// Enable Clock for Output(GPIOD)
+	RCC -> AHB1ENR |= (1U << 3);
+
+	// Configure PD12 as Output in GPIO_MODE Register (Pin 24 & 25 as 01(Output))
+	// 1. Clear Pin 24 and Pin 25
+	GPIOD -> MODER &=  ~(3U << 24);
+
+	// 2. Set Pin 24 as 0 and Pin 25 as 1
+	GPIOD -> MODER |= (1U << 24);
+
+
     /* Loop forever */
-	for(;;);
+	// Check Polling
+	while(1)
+	{
+		// Check if User button pressed (if PA0 is High)
+		if(GPIOA -> IDR & (1U << 0))
+		{
+			// Set PD12 as High
+			GPIOD -> ODR |= (1U << 12);
+		}
+		else
+		{
+			// Set PD12 Low
+			GPIOD -> ODR &= ~(1U << 12);
+		}
+	}
+
 }
+
+
+
+
+
+
